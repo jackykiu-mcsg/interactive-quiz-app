@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Questionnaire</title>
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+  <!-- <link rel="stylesheet" href="css/drupal.css"> -->
+  <link rel="stylesheet" href="css/debug.css">
+  <link rel="stylesheet" href="css/styles.css">
+  <!-- <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"></script> -->
+  <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script> -->
+
+  <style>
+  </style>
+</head>
+
+<body oncontextmenu="return false;" >
+  <div class="container">
+    <div class="row justify-content-center align-items-center">
+      <div class="col-12">
+        <div id="start-screen" class="text-center">
+          <h1 class="fade-in-up" style="font-size: 5rem;">准备好了吗？</h1>
+          <button id="start" class="btn btn-primary rounded-pill px-4">开始回答</button>
+        </div>
+        <div id="quiz-screen" class="row text-center" style="display:none;height:45vh;">
+          <div id="question" class="col-12"></div>
+          <div class="col-12">
+            <div id="answers"></div>
+            <div id="result" class="d-flex justify-content-center align-items-center"></div>
+            <button id="next" style="display:none;">下一题</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="copyright">&copy; 2024 AG team. All rights reserved.</div>
+  <button id="reset">Reset</button>
+
+  <audio id="correctSound" src="audio/correct.mp3"></audio>
+  <audio id="incorrectSound" src="audio/wrong.mp3"></audio>
+  <audio id="startSound" src="audio/game-start.mp3"></audio>
+  <audio id="resetSound" src="audio/reset.mp3"></audio>
+
+  <script>
+    // Questions Data
+    const questions = [
+      { q: "谁是新加坡的教育部长？", a: "陈振声", b: "黄循财" },
+      { q: "国家今年庆祝独立第几周年？", a: "59", b: "49" },
+      { q: "我国最大的民用机场是…？", a: "樟宜机场", b: "实里达机场" },
+      { q: "地球上最大的海洋是什么？", a: "太平洋", b: "大西洋" },
+      { q: "哪个元素的化学符号是'O'？", a: "氧气", b: "黄金" },
+      { q: "世界上最大的哺乳动物是什么？", a: "蓝鲸", b: "非洲象" },
+      { q: "第二次世界大战在何时结束？", a: "1945年", b: "1939年" },
+      { q: "日本的首都是哪座城市？", a: "东京", b: "北京" },
+      { q: "谁写了《罗密欧与朱丽叶》？", a: "威廉·莎士比亚", b: "查尔斯·狄更斯" },
+      { q: "黄金的化学符号是什么？", a: "Au", b: "Ag" },
+      { q: "哪个国家是袋鼠的故乡？", a: "澳大利亚", b: "新西兰" },
+      { q: "太阳系中最大的行星是什么？", a: "木星", b: "土星" },
+      { q: "谁画了《星夜》？", a: "文森特·梵高", b: "巴勃罗·毕加索" },
+      { q: "意大利的首都是哪座城市？", a: "罗马", b: "米兰" },
+      { q: "世界上最长的河流是？", a: "尼罗河", b: "亚马逊河" },
+      { q: "地球上最坚硬的天然物质是什么？", a: "钻石", b: "石英" },
+      { q: "谁被称为现代物理学之父？", a: "阿尔伯特·爱因斯坦", b: "艾萨克·牛顿" },
+      { q: "按陆地面积计算，最大的大陆是什么？", a: "亚洲", b: "非洲" },
+      { q: "哪个行星距离太阳最近？", a: "水星", b: "金星" },
+      { q: "谁写了《1984》？", a: "乔治·奥威尔", b: "阿道司·赫胥黎" },
+      { q: "巴西的首都是哪座城市？", a: "巴西利亚", b: "里约热内卢" },
+      { q: "哪种元素对人类骨骼至关重要？", a: "钙", b: "铁" },
+      { q: "谁画了西斯廷教堂的天花板？", a: "米开朗基罗", b: "列奥纳多·达·芬奇" },
+      { q: "世界上最大的沙漠是什么？", a: "南极洲", b: "撒哈拉" },
+      { q: "哪个国家是大堡礁的所在地？", a: "澳大利亚", b: "印度尼西亚" },
+      { q: "谁发现了青霉素？", a: "亚历山大·弗莱明", b: "玛丽·居里" },
+      { q: "加拿大的首都是哪座城市？", a: "渥太华", b: "多伦多" },
+      { q: "太阳系中最小的行星是什么？", a: "水星", b: "冥王星" },
+      { q: "谁写了《杀死一只知更鸟》？", a: "哈珀·李", b: "F. 司各特·菲茨杰拉德" },
+      { q: "银的化学符号是什么？", a: "Ag", b: "Si" }
+    ];
+
+    let currentQuestions = [...questions];
+    let currentQuestion;
+
+    const startScreen = document.getElementById('start-screen');
+    const quizScreen = document.getElementById('quiz-screen');
+    const questionEl = document.getElementById('question');
+    const answersEl = document.getElementById('answers');
+    const resultEl = document.getElementById('result');
+    const nextBtn = document.getElementById('next');
+
+    document.getElementById('start').addEventListener('click', startQuiz);
+    document.getElementById('reset').addEventListener('click', resetQuiz);
+    nextBtn.addEventListener('click', nextQuestion);
+
+    function playSound(soundId) {
+      const sound = document.getElementById(soundId);
+      sound.currentTime = 0; // Reset sound to start
+      sound.play();
+    }
+
+    function playCorrectSound() {
+      playSound('correctSound');
+    }
+
+    function playIncorrectSound() {
+      playSound('incorrectSound');
+    }
+
+    function playStartSound() {
+      playSound('startSound');
+    }
+
+    function playResetSound() {
+      playSound('resetSound');
+    }
+
+    function startQuiz() {
+      startScreen.style.display = 'none';
+      quizScreen.style.display = 'block';
+      playStartSound();
+      nextQuestion();
+    }
+
+    function resetQuiz() {
+      startScreen.style.display = 'block';
+      quizScreen.style.display = 'none';
+      currentQuestions = [...questions];
+      document.querySelector('#start-screen h1').classList.add('fade-in-up');
+      document.querySelector('#start-screen button').classList.add('fade-in-up');
+      playResetSound()
+    }
+
+    function nextQuestion() {
+      resultEl.textContent = '';
+      nextBtn.style.display = 'none';
+      nextBtn.className = 'btn btn-secondary rounded-pill';
+
+      if (currentQuestions.length === 0) {
+        currentQuestions = [...questions];
+      }
+
+      const index = Math.floor(Math.random() * currentQuestions.length);
+      currentQuestion = currentQuestions[index];
+      currentQuestions.splice(index, 1);
+
+      // Reset classes for animation
+      questionEl.classList.remove('fade-in-up');
+      answersEl.classList.remove('fade-in-up');
+      resultEl.classList.remove('fade-in-up');
+      nextBtn.classList.remove('fade-in-up');
+
+      questionEl.textContent = currentQuestion.q;
+      answersEl.innerHTML = '';
+
+      const answers = [currentQuestion.a, currentQuestion.b].sort(() => Math.random() - 0.5);
+      answers.forEach(answer => {
+        const button = document.createElement('button');
+        button.className = "btn btn-secondary rounded-pill"
+        button.textContent = answer;
+        button.addEventListener('click', () => checkAnswer(answer, button));
+        answersEl.appendChild(button);
+      });
+
+      // Force reflow
+      void questionEl.offsetWidth;
+      void answersEl.offsetWidth;
+
+      // Trigger animations
+      questionEl.classList.add('fade-in-up');
+      answersEl.classList.add('fade-in-up');
+    }
+
+    function checkAnswer(answer, clickedButton) {
+      // Disable all answer buttons
+      const buttons = answersEl.getElementsByTagName('button');
+      for (let button of buttons) {
+        button.disabled = true;
+        button.classList.add('disabled');
+      }
+
+      if (answer === currentQuestion.a) {
+        resultEl.innerHTML = '<i class="bi bi-check-circle"></i> 恭喜答对了！！';
+        clickedButton.className = 'btn btn-success rounded-pill';
+        playCorrectSound();
+      } else {
+        resultEl.innerHTML = `<i class="bi bi-x-circle"></i> 答错咯！正确答案是&nbsp;<u>${currentQuestion.a}</u>。`;
+        clickedButton.className = 'btn btn-danger rounded-pill';
+        // Highlight the correct answer
+        for (let button of buttons) {
+          if (button.textContent === currentQuestion.a) {
+            button.className = 'btn btn-success rounded-pill';
+          }
+        }
+        playIncorrectSound();
+      }
+
+      // Reset and trigger animation for result
+      resultEl.classList.remove('fade-in-up');
+      void resultEl.offsetWidth; // Force reflow
+      resultEl.classList.add('fade-in-up');
+
+      // Show next button with animation
+      setTimeout(() => {
+        nextBtn.style.display = 'inline-block';
+        nextBtn.classList.remove('fade-in-up');
+        void nextBtn.offsetWidth; // Force reflow
+        nextBtn.classList.add('fade-in-up');
+      }, 200);
+    }
+  </script>
+
+  <pre class="d-none invisible">
+    ,-~~-.___.
+  / |  '     \         It was a dark and stormy night....
+  (  )         0              
+  \_/-, ,----'            
+      ====           //                     
+    /  \-'~;    /~~~(O)
+    /  __/~|   /       |     
+  =(  _____| (_________|     
+  </pre>
+</body>
+
+</html>

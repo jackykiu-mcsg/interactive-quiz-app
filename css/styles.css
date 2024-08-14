@@ -1,0 +1,119 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;700&display=swap');
+
+/* fix iOS and Android touch issue */
+button {
+  touch-action: manipulation;
+}
+
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 2.8rem;
+  font-family: 'Noto Sans SC', Arial, Helvetica, sans-serif;
+  line-height: 1;
+  height: 100vh;
+  margin: 0;
+  background-image: url("../imgs/AdobeStock_679174729_Preview_v2.png");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  background-color: #d0d3ff;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* #container {
+  text-align: center;
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+} */
+
+.btn {
+  margin: 10px;
+  padding: 0.7rem 1.8rem;
+  font-size: 2rem;
+  cursor: pointer;
+  line-height: 1.2;
+  padding-bottom: 0.8rem;
+}
+
+#question {
+  margin-bottom: 20px;
+}
+
+#answers {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+#result {
+  margin-top: 20px;
+  font-weight: bold;
+}
+
+#copyright {
+  position: fixed;
+  bottom: 10px;
+  left: 10px;
+  background-color: transparent;
+  border: none;
+  color: #999;
+  font-size: 0.8rem;
+}
+
+#reset {
+  position: fixed;
+  bottom: 10px;
+  right: 10px;
+  background-color: transparent;
+  border: none;
+  color: #999;
+  font-size: 0.8rem;
+}
+
+.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.bi-check-circle,
+.bi-x-circle {
+  font-size: 4rem;
+  margin-right: 0.5rem;
+}
+
+.bi-check-circle {
+  color: #28a745;
+}
+
+.bi-x-circle {
+  color: #dc3545;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 40px, 0);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.fade-in-up {
+  animation: fadeInUp 300ms ease-out;
+}
+
+.hidden {
+  opacity: 0;
+}
