@@ -27,13 +27,16 @@ body {
   user-select: none;
 }
 
-/* #container {
-  text-align: center;
-  background-color: white;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-} */
+#officialLogo {
+  position: fixed;
+  top: 0px;
+  right: 0px;
+  background-color: #d0d3ff;
+  padding: 1rem;
+  border: none;
+  border-bottom-left-radius: 1rem;
+}
+
 
 .btn {
   margin: 10px;
