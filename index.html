@@ -56,7 +56,7 @@
           <div id="question" class="col-12"></div>
           <div class="col-12">
             <div id="answers"></div>
-            <div id="result" class="d-flex justify-content-center align-items-center"></div>
+            <div id="result" class="d-flex flex-column"></div>
             <button id="next" style="display:none;">下一题</button>
           </div>
         </div>
@@ -209,11 +209,11 @@
       }
 
       if (answer === currentQuestion.a) {
-        resultEl.innerHTML = '<i class="bi bi-check-circle"></i> 恭喜答对了！！';
+        resultEl.innerHTML = '<div class="d-flex justify-content-center align-items-center"><i class="bi bi-check-circle"></i> 恭喜答对了！！</div>';
         clickedButton.className = 'btn btn-success rounded-pill';
         playCorrectSound();
       } else {
-        resultEl.innerHTML = `<i class="bi bi-x-circle"></i> 答错咯！正确答案是&nbsp;<u>${currentQuestion.a}</u>。`;
+        resultEl.innerHTML = `<div class="d-flex justify-content-center align-items-center "><i class="bi bi-x-circle"></i> 答错咯！</div><div>正确答案是&nbsp;<u>${currentQuestion.a}</u>。</div>`;
         clickedButton.className = 'btn btn-danger rounded-pill';
         // Highlight the correct answer
         for (let button of buttons) {
