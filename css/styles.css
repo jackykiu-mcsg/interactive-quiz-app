@@ -14,7 +14,7 @@ body {
   line-height: 1.2;
   height: 100vh;
   margin: 0;
-  background-image: url("../imgs/240815-mtls-quiz-bg-v2.png");
+  background-image: url("../imgs/240815-mtls-quiz-bg-v3.png");
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
@@ -31,7 +31,7 @@ body {
   position: fixed;
   top: 0px;
   right: 0px;
-  background-color: #d0d3ff;
+  /* background-color: #d0d3ff; */
   padding: 1rem;
   border: none;
   border-bottom-left-radius: 1rem;
