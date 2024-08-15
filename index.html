@@ -23,25 +23,6 @@
 
   <style>
   </style>
-
-  <script>
-    button.addEventListener('touchstart', function(e) {
-      e.preventDefault(); // Prevents double-tap zooming
-    }, false);
-
-    document.addEventListener('touchmove', function(event) {
-      if (event.scale !== 1) { event.preventDefault(); }
-    }, { passive: false });
-
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/sw.js')
-        .then(function(registration) {
-          console.log('Service Worker registered with scope:', registration.scope);
-        }).catch(function(error) {
-          console.log('Service Worker registration failed:', error);
-        });
-    }
-  </script>
 </head>
 
 <body oncontextmenu="return false;" >
@@ -157,7 +138,7 @@
       quizScreen.style.display = 'none';
       currentQuestions = [...questions];
       // Perform a full page refresh
-      window.location.reload();
+      // window.location.reload();
       document.querySelector('#start-screen h1').classList.add('fade-in-up');
       document.querySelector('#start-screen button').classList.add('fade-in-up');
       playResetSound()
@@ -240,6 +221,11 @@
         nextBtn.classList.add('fade-in-up');
       }, 200);
     }
+
+    // iPad setting
+    document.addEventListener('touchmove', function(event) {
+      if (event.scale !== 1) { event.preventDefault(); }
+    }, { passive: false });
   </script>
 
   <pre class="d-none invisible">
