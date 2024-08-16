@@ -197,7 +197,7 @@
         clickedButton.className = 'btn btn-success rounded-pill';
         playCorrectSound();
       } else {
-        resultEl.innerHTML = `<div class="d-flex justify-content-center align-items-center "><i class="bi bi-x-circle"></i> 答错咯！</div><div>正确答案是&nbsp;<u>${currentQuestion.a}</u>。</div>`;
+        resultEl.innerHTML = `<div class="d-flex justify-content-center align-items-center "><i class="bi bi-x-circle"></i> 答错咯！</div>`;
         clickedButton.className = 'btn btn-danger rounded-pill';
         // Highlight the correct answer
         for (let button of buttons) {
