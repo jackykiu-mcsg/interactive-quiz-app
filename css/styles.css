@@ -31,12 +31,10 @@ body {
   position: fixed;
   top: 0px;
   right: 0px;
-  /* background-color: #d0d3ff; */
   padding: 1rem;
   border: none;
   border-bottom-left-radius: 1rem;
 }
-
 
 .btn {
   margin: 10px;
