@@ -1,54 +1,63 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="zh-Hans">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Interactive Quiz App</title>
-
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   <meta name="apple-mobile-web-app-title" content="Quiz App">
   <link rel="apple-touch-icon" href="icon.png">
   <link rel="manifest" href="manifest.json">
   <link rel="icon" type="image/x-icon" href="icon.png">
-
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
-  <!-- <link rel="stylesheet" href="css/drupal.css"> -->
-  <!-- <link rel="stylesheet" href="css/debug.css"> -->
   <link rel="stylesheet" href="css/styles.css">
-  <!-- <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"></script> -->
-  <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script> -->
-
-  <style>
-  </style>
 </head>
-
-<body oncontextmenu="return false;" >
+<body oncontextmenu="return false;">
   <div id="officialLogo">
-    <img src="imgs/8world-vertical.png" alt="" class="img-fluid d-block" style="width: 100px;height:95px;">
+    <img src="imgs/8world-vertical.png" alt="8world" class="official-logo-img">
   </div>
-  <div class="container">
-    <div class="row justify-content-center align-items-center">
-      <div class="col-12">
-        <div id="start-screen" class="text-center">
-          <h1 class="fade-in-up" style="font-size: 5rem;">准备好了吗？</h1>
-          <button id="start" class="btn btn-primary rounded-pill px-4">开始回答</button>
+
+  <main class="app-shell">
+    <section id="loading-screen" class="screen loading-panel fade-in-up">
+      <p>题库载入中...</p>
+    </section>
+
+    <section id="start-screen" class="screen hidden">
+      <h1 class="start-title fade-in-up">准备好了吗？</h1>
+      <button id="start" class="btn btn-primary fade-in-up" type="button">开始回答</button>
+    </section>
+
+    <section id="quiz-screen" class="screen quiz-panel hidden">
+      <div id="question"></div>
+      <div id="answers"></div>
+      <div id="result"></div>
+      <div class="actions">
+        <button id="next" class="btn btn-primary hidden-btn" type="button">下一题</button>
+      </div>
+    </section>
+
+    <section id="summary-screen" class="screen summary-panel hidden">
+      <h2 class="summary-title fade-in-up">小结</h2>
+      <p id="summary-subtitle" class="summary-subtitle fade-in-up"></p>
+      <div class="score-grid fade-in-up">
+        <div class="score-card">
+          <span class="score-label">答对</span>
+          <span id="correct-count" class="score-value">0</span>
         </div>
-        <div id="quiz-screen" class="row text-center" style="display:none;height:50vh;">
-          <div id="question" class="col-12"></div>
-          <div class="col-12">
-            <div id="answers"></div>
-            <div id="result" class="d-flex flex-column"></div>
-            <button id="next" style="display:none;">下一题</button>
-          </div>
+        <div class="score-card">
+          <span class="score-label">答错</span>
+          <span id="wrong-count" class="score-value">0</span>
         </div>
       </div>
-    </div>
-  </div>
-  <div id="copyright">&copy; 2024 AG team. All rights reserved.</div>
-  <button id="reset">Reset</button>
+      <div class="actions fade-in-up">
+        <button id="continue" class="btn btn-primary" type="button">继续回答</button>
+        <button id="restart" class="btn btn-secondary" type="button">重新开始</button>
+      </div>
+    </section>
+  </main>
+
+  <div id="copyright">&copy; 2026 &copy;. All rights reserved.</div>
+  <button id="reset" class="btn-small" type="button">Reset</button>
 
   <audio id="correctSound" src="audio/correct.mp3"></audio>
   <audio id="incorrectSound" src="audio/wrong.mp3"></audio>
@@ -56,58 +65,82 @@
   <audio id="resetSound" src="audio/reset.mp3"></audio>
 
   <script>
-    // Questions Data
-    const questions = [
-      { q: "新加坡的教育部长是<br>陈振声 (Chan Chun Sing)", a: "是", b: "不是" },
-      { q: "国家今年庆祝几岁生日", a: "59", b: "49" },
-      { q: "我国最大民用机场是", a: "樟宜机场", b: "实里达机场" },
-      { q: "鱼尾狮英文名称是", a: "Merlion", b: "Mermaid" },
-      { q: "新加坡国旗左上角有一弯白色新月<br>以及五颗白色小五角星", a: "是", b: "不是" },
-      { q: "国家明年庆祝几岁生日", a: "60", b: "59" },
-      { q: "新加坡国旗有两个颜色", a: "是", b: "不是" },
-      { q: "新加坡国旗的颜色是红和白", a: "是", b: "不是" },
-      { q: "新加坡最大的岛屿是", a: "圣淘沙", b: "乌敏岛" },
-      { q: "新加坡的生日是", a: "8月9日", b: "8月8日" },
-      { q: "圣淘沙 (Sentosa) <br>是新加坡其中一个岛屿", a: "是", b: "不是" },
-      { q: "乌敏岛 (Pulau Ubin) <br>是新加坡其中一个岛屿", a: "是", b: "不是" },
-      { q: "新加坡是全球绿化率最高的城市之一", a: "是", b: "不是" },
-      { q: "Night Safari 中文名称是", a: "新加坡夜间野生动物园", b: "新加坡动物园" },
-      { q: "新加坡的象征和标志", a: "鱼尾狮", b: "水獭" },
-      { q: "Singapura的意思是", a: "狮城", b: "鱼尾狮" },
-      { q: "新加坡的原名是 Singapura", a: "是", b: "不是" },
-      { q: "新加坡是由 64 座岛组成", a: "是", b: "不是" },
-      { q: "星耀樟宜 (Jewel Changi Airport) <br>里设有室内瀑布", a: "是", b: "不是" },
-      { q: "新加坡本地人说的是新加坡式英语，<br>而不仅仅是英语", a: "是", b: "不是" },
-      { q: "新加坡的另一个名称是“花园城市”", a: "是", b: "不是" },
-      { q: "滨海湾花园云雾林 <br>(Gardens by the Bay, Cloud Forest) <br>里设有室内瀑布", a: "是", b: "不是" },
-      { q: "Mandai Bird Paradise <br>中文名称是", a: "新加坡飞禽公园", b: "裕廊飞禽公园" },
-      { q: "新加坡动物园英文名称是", a: "Singapore Zoo", b: "River Wonders" },
-      { q: "英语是新加坡的官方语言", a: "是", b: "不是" },
-      { q: "中文是新加坡的官方语言", a: "是", b: "不是" },
-      { q: "马来语是新加坡的官方语言", a: "是", b: "不是" },
-      { q: "淡米尔语是新加坡的官方语言", a: "是", b: "不是" },
-      { q: "鱼尾狮是新加坡的象征", a: "是", b: "不是" },
-      { q: "Singapore Botanic Gardens <br>中文名称是", a: "新加坡植物园", b: "新加坡花园" }
-    ];
+    const QUESTION_DATA_URL = 'json/questionnaire_data.json';
+    const PAUSE_EVERY = 3;
 
-    let currentQuestions = [...questions];
+    let questions = [];
+    let currentQuestions = [];
     let currentQuestion;
+    let answeredCount = 0;
+    let correctCount = 0;
+    let wrongCount = 0;
+    let isSummaryPending = false;
 
+    const loadingScreen = document.getElementById('loading-screen');
     const startScreen = document.getElementById('start-screen');
     const quizScreen = document.getElementById('quiz-screen');
+    const summaryScreen = document.getElementById('summary-screen');
     const questionEl = document.getElementById('question');
     const answersEl = document.getElementById('answers');
     const resultEl = document.getElementById('result');
     const nextBtn = document.getElementById('next');
+    const startBtn = document.getElementById('start');
+    const resetBtn = document.getElementById('reset');
+    const restartBtn = document.getElementById('restart');
+    const continueBtn = document.getElementById('continue');
+    const correctCountEl = document.getElementById('correct-count');
+    const wrongCountEl = document.getElementById('wrong-count');
+    const summarySubtitleEl = document.getElementById('summary-subtitle');
 
-    document.getElementById('start').addEventListener('click', startQuiz);
-    document.getElementById('reset').addEventListener('click', resetQuiz);
-    nextBtn.addEventListener('click', nextQuestion);
+    startBtn.addEventListener('click', startQuiz);
+    resetBtn.addEventListener('click', resetQuiz);
+    restartBtn.addEventListener('click', resetQuiz);
+    continueBtn.addEventListener('click', continueQuiz);
+    nextBtn.addEventListener('click', handleNextAction);
+
+    loadQuestions();
+
+    async function loadQuestions() {
+      try {
+        const response = await fetch(QUESTION_DATA_URL, { cache: 'no-store' });
+
+        if (!response.ok) {
+          throw new Error(`Question data request failed: ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        if (!Array.isArray(data) || data.length === 0) {
+          throw new Error('Question data is empty or invalid.');
+        }
+
+        questions = data;
+        currentQuestions = [...questions];
+        showScreen(startScreen);
+      } catch (error) {
+        console.error(error);
+        loadingScreen.innerHTML = `
+          <p>题库载入失败。</p>
+          <p style="font-size:1.2rem;color:#666b93;">请确认 <code>${QUESTION_DATA_URL}</code> 存在，并透过本地 server 或 GitHub Pages 开启。</p>
+        `;
+      }
+    }
+
+    function showScreen(screen) {
+      [loadingScreen, startScreen, quizScreen, summaryScreen].forEach(item => {
+        item.classList.toggle('hidden', item !== screen);
+      });
+    }
 
     function playSound(soundId) {
       const sound = document.getElementById(soundId);
-      sound.currentTime = 0; // Reset sound to start
-      sound.play();
+
+      if (!sound) {
+        return;
+      }
+
+      sound.currentTime = 0;
+      sound.play().catch(() => {});
     }
 
     function playCorrectSound() {
@@ -127,27 +160,64 @@
     }
 
     function startQuiz() {
-      startScreen.style.display = 'none';
-      quizScreen.style.display = 'block';
+      answeredCount = 0;
+      correctCount = 0;
+      wrongCount = 0;
+      currentQuestions = [...questions];
+      showScreen(quizScreen);
       playStartSound();
       nextQuestion();
     }
 
     function resetQuiz() {
-      startScreen.style.display = 'block';
-      quizScreen.style.display = 'none';
+      answeredCount = 0;
+      correctCount = 0;
+      wrongCount = 0;
       currentQuestions = [...questions];
-      // Perform a full page refresh
-      // window.location.reload();
-      document.querySelector('#start-screen h1').classList.add('fade-in-up');
-      document.querySelector('#start-screen button').classList.add('fade-in-up');
-      playResetSound()
+      currentQuestion = null;
+      questionEl.innerHTML = '';
+      answersEl.innerHTML = '';
+      resultEl.innerHTML = '';
+      nextBtn.className = 'btn btn-primary hidden-btn';
+      nextBtn.textContent = '下一题';
+      isSummaryPending = false;
+      showScreen(startScreen);
+      replayStartAnimation();
+      playResetSound();
+    }
+
+    function continueQuiz() {
+      isSummaryPending = false;
+      showScreen(quizScreen);
+      nextQuestion();
+    }
+
+    function handleNextAction() {
+      if (isSummaryPending) {
+        isSummaryPending = false;
+        nextBtn.textContent = '下一题';
+        showSummary();
+        return;
+      }
+
+      nextQuestion();
+    }
+
+    function replayStartAnimation() {
+      const animatedItems = startScreen.querySelectorAll('.fade-in-up');
+
+      animatedItems.forEach(item => {
+        item.classList.remove('fade-in-up');
+        void item.offsetWidth;
+        item.classList.add('fade-in-up');
+      });
     }
 
     function nextQuestion() {
       resultEl.textContent = '';
-      nextBtn.style.display = 'none';
-      nextBtn.className = 'btn btn-secondary rounded-pill';
+      nextBtn.className = 'btn btn-primary hidden-btn';
+      nextBtn.textContent = '下一题';
+      isSummaryPending = false;
 
       if (currentQuestions.length === 0) {
         currentQuestions = [...questions];
@@ -157,7 +227,6 @@
       currentQuestion = currentQuestions[index];
       currentQuestions.splice(index, 1);
 
-      // Reset classes for animation
       questionEl.classList.remove('fade-in-up');
       answersEl.classList.remove('fade-in-up');
       resultEl.classList.remove('fade-in-up');
@@ -167,77 +236,94 @@
       answersEl.innerHTML = '';
 
       const answers = [currentQuestion.a, currentQuestion.b].sort(() => Math.random() - 0.5);
+
       answers.forEach(answer => {
         const button = document.createElement('button');
-        button.className = "btn btn-secondary rounded-pill"
+        button.className = 'btn btn-secondary';
+        button.type = 'button';
         button.textContent = answer;
         button.addEventListener('click', () => checkAnswer(answer, button));
         answersEl.appendChild(button);
       });
 
-      // Force reflow
       void questionEl.offsetWidth;
       void answersEl.offsetWidth;
-
-      // Trigger animations
       questionEl.classList.add('fade-in-up');
       answersEl.classList.add('fade-in-up');
     }
 
     function checkAnswer(answer, clickedButton) {
-      // Disable all answer buttons
       const buttons = answersEl.getElementsByTagName('button');
+
       for (let button of buttons) {
         button.disabled = true;
         button.classList.add('disabled');
       }
 
+      answeredCount++;
+
       if (answer === currentQuestion.a) {
-        resultEl.innerHTML = '<div class="d-flex justify-content-center align-items-center"><i class="bi bi-check-circle"></i> 恭喜答对了！！</div>';
-        clickedButton.className = 'btn btn-success rounded-pill';
+        correctCount++;
+        resultEl.innerHTML = '<div class="result-line"><span class="result-icon correct">✓</span> 恭喜答对了！！</div>';
+        clickedButton.className = 'btn btn-success disabled';
         playCorrectSound();
       } else {
-        resultEl.innerHTML = `<div class="d-flex justify-content-center align-items-center "><i class="bi bi-x-circle"></i> 答错咯！</div>`;
-        clickedButton.className = 'btn btn-danger rounded-pill';
-        // Highlight the correct answer
+        wrongCount++;
+        resultEl.innerHTML = '<div class="result-line"><span class="result-icon wrong">×</span> 答错咯！</div>';
+        clickedButton.className = 'btn btn-danger disabled';
+
         for (let button of buttons) {
           if (button.textContent === currentQuestion.a) {
-            button.className = 'btn btn-success rounded-pill';
+            button.className = 'btn btn-success disabled';
           }
         }
+
         playIncorrectSound();
       }
 
-      // Reset and trigger animation for result
       resultEl.classList.remove('fade-in-up');
-      void resultEl.offsetWidth; // Force reflow
+      void resultEl.offsetWidth;
       resultEl.classList.add('fade-in-up');
 
-      // Show next button with animation
       setTimeout(() => {
-        nextBtn.style.display = 'inline-block';
+        if (answeredCount % PAUSE_EVERY === 0) {
+          isSummaryPending = true;
+          nextBtn.textContent = '查看小结';
+        } else {
+          nextBtn.textContent = '下一题';
+        }
+
+        nextBtn.className = 'btn btn-primary';
         nextBtn.classList.remove('fade-in-up');
-        void nextBtn.offsetWidth; // Force reflow
+        void nextBtn.offsetWidth;
         nextBtn.classList.add('fade-in-up');
-      }, 200);
+      }, 500);
+    }
+
+    function showSummary() {
+      correctCountEl.textContent = correctCount;
+      wrongCountEl.textContent = wrongCount;
+      summarySubtitleEl.textContent = `已回答 ${answeredCount} 题，先暂停一下。`;
+      showScreen(summaryScreen);
     }
 
     // iPad setting
     document.addEventListener('touchmove', function(event) {
-      if (event.scale !== 1) { event.preventDefault(); }
+      if (event.scale !== 1) {
+        event.preventDefault();
+      }
     }, { passive: false });
 
-console.log(`
-  ,-~~-.___.
- / |  '     \\     我想變成妳的冬天  無論妳是否在等待  我還是會來到妳的面前....
-(  )         0              
-\\_/-, ,----'            
-    ====           //                     
-   /  \\-'~;    /~~~(O)
-  /  __/~|   /       |     
-=(  _____| (_________|   JK
-`);
+    console.log(`
+     ,-~~-.___.
+    / |  '     \\ 我想變成妳的冬天 無論妳是否在等待 我還是會來到妳的面前....
+   (  )         0
+    \\_/-, ,----'
+       ====           //
+      /  \\-'~;    /~~~(O)
+     /  __/~|   /       |
+   =(  _____| (_________| JK
+    `);
   </script>
 </body>
-
 </html>
