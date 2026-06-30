@@ -62,17 +62,17 @@ body {
   position: fixed;
   top: 0;
   right: 0;
-  padding: 2rem;
+  padding: 1.5rem;
   border: none;
-  border-bottom-left-radius: 3rem;
+  border-bottom-left-radius: 2rem;
   background-color: var(--panel);
   z-index: 10;
 }
 
 .official-logo-img {
   display: block;
-  width: 100px;
-  height: 95px;
+  width: 50px;
+  height: auto;
   object-fit: contain;
 }
 
