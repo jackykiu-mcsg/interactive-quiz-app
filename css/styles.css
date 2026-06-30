@@ -166,6 +166,12 @@ body {
   background: linear-gradient(180deg, #ff7777, var(--danger));
 }
 
+.section-result {
+  display: flex;
+  place-content: center;
+  margin: 1rem auto;
+}
+
 .actions {
   display: flex;
   flex-wrap: wrap;
