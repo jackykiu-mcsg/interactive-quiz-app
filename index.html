@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Interactive Quiz App</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   <meta name="apple-mobile-web-app-title" content="Quiz App">
   <link rel="apple-touch-icon" href="icon.png">
@@ -76,28 +77,30 @@
     let answeredCount = 0;
     let correctCount = 0;
     let wrongCount = 0;
-    let isSummaryPending = false;
+    let groupAnsweredCount = 0;
+    let groupCorrectCount = 0;
+    // let isSummaryPending = false;
 
     const loadingScreen = document.getElementById('loading-screen');
     const startScreen = document.getElementById('start-screen');
     const quizScreen = document.getElementById('quiz-screen');
-    const summaryScreen = document.getElementById('summary-screen');
+    // const summaryScreen = document.getElementById('summary-screen');
     const questionEl = document.getElementById('question');
     const answersEl = document.getElementById('answers');
     const resultEl = document.getElementById('result');
     const nextBtn = document.getElementById('next');
     const startBtn = document.getElementById('start');
     const resetBtn = document.getElementById('reset');
-    const restartBtn = document.getElementById('restart');
-    const continueBtn = document.getElementById('continue');
-    const correctCountEl = document.getElementById('correct-count');
-    const wrongCountEl = document.getElementById('wrong-count');
-    const summarySubtitleEl = document.getElementById('summary-subtitle');
+    // const restartBtn = document.getElementById('restart');
+    // const continueBtn = document.getElementById('continue');
+    // const correctCountEl = document.getElementById('correct-count');
+    // const wrongCountEl = document.getElementById('wrong-count');
+    // const summarySubtitleEl = document.getElementById('summary-subtitle');
 
     startBtn.addEventListener('click', startQuiz);
     resetBtn.addEventListener('click', resetQuiz);
-    restartBtn.addEventListener('click', resetQuiz);
-    continueBtn.addEventListener('click', continueQuiz);
+    // restartBtn.addEventListener('click', resetQuiz);
+    // continueBtn.addEventListener('click', continueQuiz);
     nextBtn.addEventListener('click', handleNextAction);
 
     loadQuestions();
@@ -129,7 +132,7 @@
     }
 
     function showScreen(screen) {
-      [loadingScreen, startScreen, quizScreen, summaryScreen].forEach(item => {
+      [loadingScreen, startScreen, quizScreen].forEach(item => {
         item.classList.toggle('hidden', item !== screen);
       });
     }
@@ -165,6 +168,8 @@
       answeredCount = 0;
       correctCount = 0;
       wrongCount = 0;
+      groupAnsweredCount = 0;
+      groupCorrectCount = 0;
       currentQuestions = [...questions];
       showScreen(quizScreen);
       playStartSound();
@@ -182,23 +187,29 @@
       resultEl.innerHTML = '';
       nextBtn.className = 'btn btn-primary hidden-btn';
       nextBtn.textContent = '下一题';
-      isSummaryPending = false;
+      // isSummaryPending = false;
       showScreen(startScreen);
       replayStartAnimation();
       playResetSound();
     }
 
-    function continueQuiz() {
-      isSummaryPending = false;
-      showScreen(quizScreen);
+    // function continueQuiz() {
+      // isSummaryPending = false;
+      // showScreen(quizScreen);
+      // nextQuestion();
+    // }
+
+    function restartPrizeRound() {
+      groupAnsweredCount = 0;
+      groupCorrectCount = 0;
       nextQuestion();
+      playResetSound();
     }
 
     function handleNextAction() {
-      if (isSummaryPending) {
-        isSummaryPending = false;
-        nextBtn.textContent = '下一题';
-        showSummary();
+      if (nextBtn.dataset.action === 'restart-round') {
+        nextBtn.dataset.action = '';
+        restartPrizeRound();
         return;
       }
 
@@ -219,7 +230,8 @@
       resultEl.textContent = '';
       nextBtn.className = 'btn btn-primary hidden-btn';
       nextBtn.textContent = '下一题';
-      isSummaryPending = false;
+      nextBtn.dataset.action = '';
+      // isSummaryPending = false;
 
       if (currentQuestions.length === 0) {
         currentQuestions = [...questions];
@@ -263,9 +275,11 @@
       }
 
       answeredCount++;
+      groupAnsweredCount++;
 
       if (answer === currentQuestion.a) {
         correctCount++;
+        groupCorrectCount++;
         resultEl.innerHTML = '<div class="result-line"><span class="result-icon correct">✓</span> 恭喜答对了！！</div>';
         clickedButton.className = 'btn btn-success disabled';
         playCorrectSound();
@@ -288,26 +302,34 @@
       resultEl.classList.add('fade-in-up');
 
       setTimeout(() => {
-        if (answeredCount % PAUSE_EVERY === 0) {
-          isSummaryPending = true;
-          nextBtn.textContent = '查看小结';
+        if (groupAnsweredCount === PAUSE_EVERY) {
+          const isWinner = groupCorrectCount === PAUSE_EVERY;
+
+          resultEl.innerHTML = isWinner
+            ? '<div class="result-line prize-win">🎉 恭喜获奖！</div>'
+            : '<div class="result-line prize-lose">再接再厉！</div>';
+
+          nextBtn.textContent = '重新开始';
+          nextBtn.dataset.action = 'restart-round';
+          nextBtn.className = 'btn btn-prize';
         } else {
           nextBtn.textContent = '下一题';
+          nextBtn.dataset.action = '';
+          nextBtn.className = 'btn btn-primary';
         }
 
-        nextBtn.className = 'btn btn-primary';
         nextBtn.classList.remove('fade-in-up');
         void nextBtn.offsetWidth;
         nextBtn.classList.add('fade-in-up');
       }, 500);
     }
 
-    function showSummary() {
-      correctCountEl.textContent = correctCount;
-      wrongCountEl.textContent = wrongCount;
-      summarySubtitleEl.textContent = `已回答 ${answeredCount} 题，先暂停一下。`;
-      showScreen(summaryScreen);
-    }
+    // function showSummary() {
+    //   correctCountEl.textContent = correctCount;
+    //   wrongCountEl.textContent = wrongCount;
+    //   summarySubtitleEl.textContent = `已回答 ${answeredCount} 题，先暂停一下。`;
+    //   showScreen(summaryScreen);
+    // }
 
     // iPad setting
     document.addEventListener('touchmove', function(event) {

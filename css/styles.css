@@ -166,6 +166,22 @@ body {
   background: linear-gradient(180deg, #ff7777, var(--danger));
 }
 
+.prize-win,
+.prize-lose {
+  font-size: clamp(2rem, 5vw, 4rem);
+  font-weight: 900;
+  color: #624326;
+  text-align: center;
+}
+
+.prize-win {
+  text-shadow: 0 0.35rem 1rem rgba(255, 210, 90, 0.35);
+}
+
+.prize-lose {
+  opacity: 0.95;
+}
+
 .section-result {
   display: flex;
   place-content: center;
@@ -251,6 +267,13 @@ body {
   --btn-bottom: #cf4449;
   --btn-text: #fff;
   --btn-shadow: rgba(207, 68, 73, 0.17);
+}
+
+.btn-prize {
+  --btn-top: #ffd45a;
+  --btn-bottom: #d69a27;
+  --btn-text: #624326;
+  --btn-shadow: rgba(214, 154, 39, 0.2);
 }
 
 .btn-success.disabled,
