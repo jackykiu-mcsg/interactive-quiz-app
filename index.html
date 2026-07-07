@@ -66,6 +66,8 @@
   <audio id="incorrectSound" src="audio/wrong.mp3"></audio>
   <audio id="startSound" src="audio/game-start.mp3"></audio>
   <audio id="resetSound" src="audio/reset.mp3"></audio>
+  <audio id="winSound" src="audio/win.mp3"></audio>
+  <audio id="loseSound" src="audio/lose.mp3"></audio>
 
   <script>
     const QUESTION_DATA_URL = 'json/questionnaire_data.json';
@@ -162,6 +164,14 @@
 
     function playResetSound() {
       playSound('resetSound');
+    }
+
+    function playWinSound() {
+      playSound('winSound');
+    }
+
+    function playLoseSound() {
+      playSound('loseSound');
     }
 
     function startQuiz() {
@@ -308,6 +318,14 @@
           resultEl.innerHTML = isWinner
             ? '<div class="result-line prize-win">🎉 恭喜获奖！</div>'
             : '<div class="result-line prize-lose">再接再厉！</div>';
+          
+          setTimeout(() => {
+            if (isWinner) {
+              if (typeof playWinSound === 'function') playWinSound();
+            } else {
+              if (typeof playLoseSound === 'function') playLoseSound();
+            }
+          }, 300);
 
           nextBtn.textContent = '重新开始';
           nextBtn.dataset.action = 'restart-round';
