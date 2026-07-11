@@ -44,7 +44,7 @@ body {
   font-size: clamp(1.8rem, 3.5vw, 2.8rem);
   font-family: var(--font-main);
   line-height: 1.2;
-  background-image: url('../imgs/mtls-quiz-2026-bg.jpg');
+  background-image: url('../imgs/mtls-quiz-2026-bg-v2.jpg');
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
@@ -76,6 +76,16 @@ body {
   object-fit: contain;
 }
 
+section#start-screen {
+  width: 100%;
+  padding: clamp(1.4rem, 3vw, 2.5rem);
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  border-radius: 2rem;
+  background: var(--panel);
+  box-shadow: 0 24px 70px rgba(58, 64, 138, 0.18);
+  backdrop-filter: blur(4px);
+}
+
 .app-shell {
   width: min(1120px, 94vw);
   min-height: 50vh;
@@ -94,8 +104,8 @@ body {
   font-size: clamp(3.6rem, 7vw, 5rem);
   font-weight: 700;
   letter-spacing: 0.04em;
-  color: #ffffff;
-  text-shadow: 5px 5px 0px #5f4227;
+  color: #5f4227;
+  /* text-shadow: 5px 5px 0px #5f4227; */
 }
 
 .quiz-panel,
