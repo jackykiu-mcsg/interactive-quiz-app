@@ -62,7 +62,7 @@ body {
   position: fixed;
   top: 0;
   right: 0;
-  padding: 1.5rem;
+  padding: 0.8rem 0.8rem 1rem 1rem;
   border: none;
   border-bottom-left-radius: 2rem;
   background-color: var(--panel);
@@ -71,7 +71,7 @@ body {
 
 .official-logo-img {
   display: block;
-  width: 50px;
+  width: 100px;
   height: auto;
   object-fit: contain;
 }
