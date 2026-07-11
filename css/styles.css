@@ -112,7 +112,7 @@ section#start-screen {
 .summary-panel,
 .loading-panel {
   width: 100%;
-  padding: clamp(1.4rem, 3vw, 2.5rem);
+  padding: 1rem 2rem;
   border: 1px solid rgba(255, 255, 255, 0.55);
   border-radius: 2rem;
   background: var(--panel);
@@ -121,7 +121,7 @@ section#start-screen {
 }
 
 #quiz-screen {
-  min-height: 55vh;
+  min-height: 77vh;
 }
 
 #question {
